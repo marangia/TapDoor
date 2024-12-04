@@ -102,17 +102,20 @@
     <p>&copy; 2024 Restaurant Prototype</p>
   </footer>
 
-  <script>
-    document.querySelectorAll('.star-rating input').forEach((star) => {
-      star.addEventListener('change', () => {
-        const rating = star.value;
-        if (rating >= 4) {
-          window.location.href = 'https://www.google.com/search?q=restaurant+name#lrd=0x...';
-        } else {
-          document.getElementById('feedback-form').style.display = 'block';
-        }
-      });
+<script>
+  document.querySelectorAll('.star-rating input').forEach((star) => {
+    star.addEventListener('change', () => {
+      const rating = star.value; // Get the selected star rating
+      if (rating >= 4) {
+        // Redirect to Google review page for 4-5 stars
+        window.location.href = 'https://www.google.com/search?q=restaurant+name#lrd=0x...';
+      } else {
+        // Show the feedback form for 1-3 stars
+        document.getElementById('feedback-form').style.display = 'block';
+      }
     });
-  </script>
+  });
+</script>
+
 </body>
 </html>
