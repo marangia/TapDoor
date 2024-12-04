@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Restaurant Prototype</title>
   <style>
     body {
@@ -58,6 +58,64 @@
       background-color: #343a40;
       color: white;
     }
+    /* Chatbot Styles */
+    #chat-container {
+      max-width: 600px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      height: 400px;
+    }
+    #chat-window {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      border-bottom: 1px solid #ccc;
+    }
+    .message {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
+      max-width: 80%;
+      word-wrap: break-word;
+    }
+    .message.user {
+      background-color: #dcf8c6;
+      align-self: flex-end;
+    }
+    .message.bot {
+      background-color: #f1f0f0;
+      align-self: flex-start;
+    }
+    #chat-input {
+      display: flex;
+    }
+    #chat-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-top: 1px solid #ccc;
+      border-radius: 0 0 0 8px;
+      font-size: 1rem;
+    }
+    #chat-input button {
+      padding: 10px 20px;
+      border: none;
+      background-color: #343a40;
+      color: white;
+      cursor: pointer;
+      border-top: 1px solid #ccc;
+      border-left: 1px solid #ccc;
+      border-radius: 0 0 8px 0;
+      font-size: 1rem;
+    }
+    #chat-input button:hover {
+      background-color: #495057;
+    }
   </style>
 </head>
 <body>
@@ -68,13 +126,14 @@
     <!-- Review Section -->
     <div class="section">
       <h2>Leave a Review</h2>
-    <div class="star-rating">
-  <input type="radio" name="rating" value="1" id="star-1"><label for="star-1">☆</label>
-  <input type="radio" name="rating" value="2" id="star-2"><label for="star-2">☆</label>
-  <input type="radio" name="rating" value="3" id="star-3"><label for="star-3">☆</label>
-  <input type="radio" name="rating" value="4" id="star-4"><label for="star-4">☆</label>
-  <input type="radio" name="rating" value="5" id="star-5"><label for="star-5">☆</label>
-</div>
+      <div class="star-rating">
+        <!-- Arrange stars in ascending order -->
+        <input type="radio" name="rating" value="1" id="star-1"><label for="star-1">☆</label>
+        <input type="radio" name="rating" value="2" id="star-2"><label for="star-2">☆</label>
+        <input type="radio" name="rating" value="3" id="star-3"><label for="star-3">☆</label>
+        <input type="radio" name="rating" value="4" id="star-4"><label for="star-4">☆</label>
+        <input type="radio" name="rating" value="5" id="star-5"><label for="star-5">☆</label>
+      </div>
       <div id="feedback-form">
         <h3>We're sorry to hear that. Tell us how we can improve:</h3>
         <form action="https://formspree.io/f/your-email" method="POST">
@@ -87,7 +146,15 @@
     <!-- Chatbot Section -->
     <div class="section">
       <h2>Chat with Us</h2>
-      <p>This is a placeholder for a chatbot or FAQ section. Here, you can integrate a chatbot widget or provide answers to common questions.</p>
+      <div id="chat-container">
+        <div id="chat-window">
+          <!-- Messages will appear here -->
+        </div>
+        <div id="chat-input">
+          <input type="text" id="message-input" placeholder="Type your message here..." />
+          <button id="send-button">Send</button>
+        </div>
+      </div>
     </div>
 
     <!-- Quiz Section -->
@@ -102,20 +169,78 @@
     <p>&copy; 2024 Restaurant Prototype</p>
   </footer>
 
-<script>
-  document.querySelectorAll('.star-rating input').forEach((star) => {
-    star.addEventListener('change', () => {
-      const rating = star.value; // Get the selected star rating
-      if (rating >= 4) {
-        // Redirect to Google review page for 4-5 stars
-        window.location.href = 'https://www.google.com/search?q=restaurant+name#lrd=0x...';
-      } else {
-        // Show the feedback form for 1-3 stars
-        document.getElementById('feedback-form').style.display = 'block';
+  <script>
+    // Review Feature Script
+    document.querySelectorAll('.star-rating input').forEach((star) => {
+      star.addEventListener('change', () => {
+        const rating = star.value; // Get the selected star rating
+        if (rating >= 4) {
+          // Redirect to Google review page for 4-5 stars
+          window.location.href = 'https://www.google.com/maps/place/Your+Restaurant+Name/@latitude,longitude';
+        } else {
+          // Show the feedback form for 1-3 stars
+          document.getElementById('feedback-form').style.display = 'block';
+        }
+      });
+    });
+
+    // Chatbot Feature Script
+    const chatWindow = document.getElementById('chat-window');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+
+    sendButton.addEventListener('click', () => {
+      const message = messageInput.value.trim();
+      if (message === '') return;
+
+      // Display user message
+      appendMessage('user', message);
+      messageInput.value = '';
+
+      // Send message to OpenAI API
+      fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer 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'
+        },
+        body: JSON.stringify({
+          model: "gpt-4",
+          messages: [
+            { role: "system", content: "You are a helpful assistant for a restaurant website." },
+            { role: "user", content: message }
+          ]
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.choices && data.choices.length > 0) {
+          const reply = data.choices[0].message.content.trim();
+          appendMessage('bot', reply);
+        } else {
+          appendMessage('bot', 'Sorry, I could not process your request.');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        appendMessage('bot', 'An error occurred. Please try again later.');
+      });
+    });
+
+    function appendMessage(sender, message) {
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message', sender);
+      messageDiv.textContent = message;
+      chatWindow.appendChild(messageDiv);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    // Allow pressing Enter to send the message
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendButton.click();
       }
     });
-  });
-</script>
-
+  </script>
 </body>
 </html>
