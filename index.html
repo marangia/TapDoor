@@ -205,28 +205,27 @@
     let currentThreadId = null;
 
     async function sendMessage(message) {
-      loadingIndicator.style.display = 'block';
-      try {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer hr-mr-d01'
+    };
+    console.log('Sending headers:', headers);
+
+    try {
         const response = await fetch(chatApiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer hr-mr-d01' // Replace with secure auth method
-          },
-          body: JSON.stringify({ message, threadId: currentThreadId })
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ message, threadId: currentThreadId })
         });
 
         const data = await response.json();
+        console.log('Response:', data);
         currentThreadId = data.threadId;
-
         appendMessage('bot', data.message);
-      } catch (error) {
+    } catch (error) {
         console.error('Error:', error);
-        appendMessage('bot', 'Error communicating with the server.');
-      } finally {
-        loadingIndicator.style.display = 'none';
-      }
     }
+}
 
     function appendMessage(sender, message) {
       const messageElement = document.createElement('div');
