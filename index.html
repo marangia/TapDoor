@@ -80,7 +80,6 @@
       background-color: #343a40;
       color: white;
     }
-    /* Chatbot Styles */
     #chat-container {
       max-width: 600px;
       margin: 20px auto;
@@ -145,7 +144,6 @@
       margin-top: 10px;
     }
   </style>
-  <!-- Include Axios via CDN if needed, but as per your request, we're not using it -->
 </head>
 <body>
   <header>
@@ -156,7 +154,6 @@
     <div class="section">
       <h2>Leave a Review</h2>
       <div class="star-rating">
-        <!-- Arrange stars in ascending order -->
         <input type="radio" name="rating" value="1" id="star-1"><label for="star-1">☆</label>
         <input type="radio" name="rating" value="2" id="star-2"><label for="star-2">☆</label>
         <input type="radio" name="rating" value="3" id="star-3"><label for="star-3">☆</label>
@@ -177,7 +174,7 @@
       <h2>Chat with Us</h2>
       <div id="chat-container">
         <div id="chat-window">
-          <!-- Messages will appear here -->
+          <!-- Chat messages will appear here -->
         </div>
         <div id="loading">...</div>
         <div id="chat-input">
@@ -191,7 +188,6 @@
     <div class="section">
       <h2>Take a Quick Quiz</h2>
       <p>Complete this quiz to win a free coffee!</p>
-      <!-- Replace the iframe src with your actual quiz link -->
       <iframe src="https://docs.google.com/forms/d/e/your-form-id/viewform"></iframe>
     </div>
   </div>
@@ -200,205 +196,55 @@
   </footer>
 
   <script>
-    // Review Feature Script
-    document.querySelectorAll('.star-rating input').forEach((star) => {
-      star.addEventListener('change', () => {
-        const rating = star.value; // Get the selected star rating
-        if (rating >= 4) {
-          // Redirect to Google review page for 4-5 stars
-          window.location.href = 'https://www.google.com/maps/place/Your+Restaurant+Name/@latitude,longitude';
-        } else {
-          // Show the feedback form for 1-3 stars
-          document.getElementById('feedback-form').style.display = 'block';
-        }
-      });
-    });
-
-    // Chatbot Feature Script
     const chatWindow = document.getElementById('chat-window');
     const messageInput = document.getElementById('message-input');
     const sendButton = document.getElementById('send-button');
     const loadingIndicator = document.getElementById('loading');
+    const chatApiUrl = 'https://dev-docker.therightdot.com/cc/chat'; // Backend API for chatbot interactions
 
-    // Initialize thread on first message
-    let threadId = null;
-    const assistantId = 'asst_elYJZIdmiufLu89jS8bdNc4B'; // Your Assistant ID
-    const apiKey = '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'; // Replace with your new OpenAI API key
+    let currentThreadId = null;
 
-    // Helper functions for OpenAI API calls using fetch
-    async function createThread(apiKey) {
-      try {
-        const response = await fetch('https://api.openai.com/v1/threads', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-            'OpenAI-Beta': 'assistants=v2'
-          },
-          body: JSON.stringify({})
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error creating thread: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        return data.id;
-      } catch (error) {
-        console.error('Error creating thread:', error);
-        appendMessage('bot', 'Sorry, something went wrong while initializing our chat.');
-      }
-    }
-
-    async function sendMessageToAssistant(threadId, inputText, apiKey) {
-      try {
-        const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-            'OpenAI-Beta': 'assistants=v2'
-          },
-          body: JSON.stringify({
-            role: 'user',
-            content: inputText
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error sending message: ${response.statusText}`);
-        }
-      } catch (error) {
-        console.error('Error sending message:', error);
-        appendMessage('bot', 'Sorry, something went wrong while sending your message.');
-      }
-    }
-
-    async function createRun(threadId, assistantId, apiKey) {
-      try {
-        const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-            'OpenAI-Beta': 'assistants=v2'
-          },
-          body: JSON.stringify({
-            assistant_id: assistantId
-          })
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error creating run: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        return data.id;
-      } catch (error) {
-        console.error('Error creating run:', error);
-        appendMessage('bot', 'Sorry, something went wrong while processing your request.');
-      }
-    }
-
-    async function pollForRunStatus(threadId, runId, apiKey) {
-      const pollInterval = 2000; // Poll every 2 seconds
-      const maxRetries = 15; // Maximum polling attempts
-
-      for (let attempt = 0; attempt < maxRetries; attempt++) {
-        try {
-          const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/runs/${runId}`, {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${apiKey}`,
-              'Content-Type': 'application/json',
-              'OpenAI-Beta': 'assistants=v2'
-            }
-          });
-
-          if (!response.ok) {
-            throw new Error(`Error polling run status: ${response.statusText}`);
-          }
-
-          const data = await response.json();
-
-          if (data.status === 'completed') {
-            const messages = await retrieveMessages(threadId, apiKey);
-            const botMessage = messages.messages.find(msg => msg.role === 'assistant')?.content || 'Sorry, I could not process your request.';
-            appendMessage('bot', botMessage);
-            return;
-          }
-        } catch (error) {
-          console.error('Error polling run status:', error);
-          appendMessage('bot', 'Sorry, something went wrong while retrieving the response.');
-          return;
-        }
-
-        // Wait for pollInterval before next attempt
-        await new Promise(resolve => setTimeout(resolve, pollInterval));
-      }
-
-      appendMessage('bot', 'Sorry, the assistant is taking longer than expected to respond.');
-    }
-
-    async function retrieveMessages(threadId, apiKey) {
-      try {
-        const response = await fetch(`https://api.openai.com/v1/threads/${threadId}/messages`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json',
-            'OpenAI-Beta': 'assistants=v2'
-          }
-        });
-
-        if (!response.ok) {
-          throw new Error(`Error retrieving messages: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error('Error retrieving messages:', error);
-        appendMessage('bot', 'Sorry, something went wrong while retrieving the response.');
-      }
-    }
-
-    async function handleUserMessage(message) {
-      if (!threadId) {
-        loadingIndicator.style.display = 'block';
-        threadId = await createThread(apiKey);
-        loadingIndicator.style.display = 'none';
-        if (!threadId) return;
-      }
-
-      appendMessage('user', message);
+    async function sendMessage(message) {
       loadingIndicator.style.display = 'block';
+      try {
+        const response = await fetch(chatApiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer hr-mr-d01' // Replace with secure auth method
+          },
+          body: JSON.stringify({ message, threadId: currentThreadId })
+        });
 
-      await sendMessageToAssistant(threadId, message, apiKey);
-      const runId = await createRun(threadId, assistantId, apiKey);
-      if (runId) {
-        await pollForRunStatus(threadId, runId, apiKey);
+        const data = await response.json();
+        currentThreadId = data.threadId;
+
+        appendMessage('bot', data.message);
+      } catch (error) {
+        console.error('Error:', error);
+        appendMessage('bot', 'Error communicating with the server.');
+      } finally {
+        loadingIndicator.style.display = 'none';
       }
+    }
 
-      loadingIndicator.style.display = 'none';
+    function appendMessage(sender, message) {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message', sender);
+      messageElement.textContent = message;
+      chatWindow.appendChild(messageElement);
+      chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
     sendButton.addEventListener('click', () => {
       const message = messageInput.value.trim();
-      if (message === '') return;
-      handleUserMessage(message);
+      if (!message) return;
+
+      appendMessage('user', message);
       messageInput.value = '';
+      sendMessage(message);
     });
 
-    function appendMessage(sender, message) {
-      const messageDiv = document.createElement('div');
-      messageDiv.classList.add('message', sender);
-      messageDiv.textContent = message;
-      chatWindow.appendChild(messageDiv);
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
-    // Allow pressing Enter to send the message
     messageInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         sendButton.click();
