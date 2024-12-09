@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Restaurant Prototipo</title>
+  <title>Restaurant Prototype</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -196,6 +196,22 @@
   </footer>
 
   <script>
+    document.querySelectorAll('.star-rating input').forEach(star => {
+        star.addEventListener('change', function() {
+            const rating = parseInt(this.value, 10);
+            const feedbackForm = document.getElementById('feedback-form');
+
+            if (rating <= 3) {
+                // Show feedback form for ratings 1, 2, or 3
+                feedbackForm.style.display = 'block';
+            } else if (rating >= 4) {
+                // Redirect for ratings 4 or 5
+                feedbackForm.style.display = 'none'; // Hide the feedback form
+                window.location.href = 'https://www.example.com'; // Replace with your external URL
+            }
+        });
+    });
+
     const chatWindow = document.getElementById('chat-window');
     const messageInput = document.getElementById('message-input');
     const sendButton = document.getElementById('send-button');
@@ -205,27 +221,27 @@
     let currentThreadId = null;
 
     async function sendMessage(message) {
-    const headers = {
+      const headers = {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer hr-mr-d01'
-    };
-    console.log('Sending headers:', headers);
+      };
+      console.log('Sending headers:', headers);
 
-    try {
+      try {
         const response = await fetch(chatApiUrl, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({ message, threadId: currentThreadId })
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ message, threadId: currentThreadId })
         });
 
         const data = await response.json();
         console.log('Response:', data);
         currentThreadId = data.threadId;
         appendMessage('bot', data.message);
-    } catch (error) {
+      } catch (error) {
         console.error('Error:', error);
+      }
     }
-}
 
     function appendMessage(sender, message) {
       const messageElement = document.createElement('div');
