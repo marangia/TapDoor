@@ -3,307 +3,219 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-translate="title">Restaurant Prototipazzo</title>
+  <title data-translate="title">Ristorante La Luna</title>
   <style>
-    /* Your existing styles */
+    /* General styles */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f8f9fa;
+      background-color: #e7b77f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     header {
-      background-color: #343a40;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background-color: #e7b77f;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
     }
     header h1 {
       margin: 0;
+      font-size: 18px;
+      font-weight: bold;
     }
-    .language-selector {
-      position: absolute;
-      top: 20px;
-      right: 20px;
+    .flag-selector {
+      font-size: 18px;
+      cursor: pointer;
     }
+
+    /* Main content */
     .container {
-      padding: 20px;
+      margin-top: 60px;
+      width: 100%;
+      max-width: 400px;
     }
-    .section {
-      margin-bottom: 20px;
+
+    .feedback-card {
+      background: #f9f9f9;
+      border-radius: 10px;
       padding: 20px;
-      background: white;
-      border-radius: 8px;
+      text-align: center;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .star-rating {
+    .feedback-card h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    .feedback-card .star-rating {
       display: flex;
       justify-content: center;
       gap: 10px;
+      margin-bottom: 20px;
     }
-    .star-rating label {
+    .feedback-card .star-rating label {
       font-size: 2rem;
-      color: #ffd700;
+      color: #ccc;
       cursor: pointer;
     }
-    .star-rating input {
+    .feedback-card .star-rating input {
       display: none;
+    }
+    .feedback-card .star-rating input:checked ~ label,
+    .feedback-card .star-rating input:hover ~ label {
+      color: #ffb400;
     }
     #feedback-form {
       display: none;
       margin-top: 20px;
     }
-    textarea {
+    #feedback-form textarea {
       width: 100%;
-      height: 100px;
-      padding: 10px;
-      border-radius: 4px;
+      height: 80px;
       border: 1px solid #ccc;
-      resize: vertical;
-      font-size: 1rem;
-    }
-    button {
-      padding: 10px 20px;
-      border: none;
-      background-color: #343a40;
-      color: white;
-      cursor: pointer;
-      border-radius: 4px;
-      font-size: 1rem;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #495057;
-    }
-    iframe {
-      width: 100%;
-      height: 300px;
-      border: none;
-    }
-    footer {
-      text-align: center;
-      padding: 10px;
-      background-color: #343a40;
-      color: white;
-    }
-    #chat-container {
-      max-width: 600px;
-      margin: 20px auto;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background: white;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      height: 400px;
-    }
-    #chat-window {
-      flex: 1;
-      padding: 10px;
-      overflow-y: auto;
-      border-bottom: 1px solid #ccc;
-    }
-    .message {
-      margin: 10px 0;
-      padding: 10px;
       border-radius: 5px;
-      max-width: 80%;
-      word-wrap: break-word;
-    }
-    .message.user {
-      background-color: #dcf8c6;
-      align-self: flex-end;
-    }
-    .message.bot {
-      background-color: #f1f0f0;
-      align-self: flex-start;
-    }
-    #chat-input {
-      display: flex;
-    }
-    #chat-input input {
-      flex: 1;
       padding: 10px;
-      border: none;
-      border-top: 1px solid #ccc;
-      border-radius: 0 0 0 8px;
-      font-size: 1rem;
+      font-size: 14px;
+      resize: none;
+      margin-bottom: 10px;
     }
-    #chat-input button {
+    #feedback-form button {
+      background: black;
+      color: white;
       padding: 10px 20px;
       border: none;
-      background-color: #343a40;
-      color: white;
+      border-radius: 5px;
       cursor: pointer;
-      border-top: 1px solid #ccc;
-      border-left: 1px solid #ccc;
-      border-radius: 0 0 8px 0;
-      font-size: 1rem;
     }
-    #chat-input button:hover {
-      background-color: #495057;
-    }
-    #loading {
-      display: none;
+
+    /* Reward button */
+    .reward-button {
+      margin-top: 20px;
+      display: block;
+      background: black;
+      color: white;
       text-align: center;
-      color: gray;
-      margin-top: 10px;
+      padding: 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1 data-translate="header.title">Restaurant Prototipo</h1>
-    <div class="language-selector">
-      <label for="language-select" data-translate="label.language">Language:</label>
+    <h1 data-translate="header.title">Ristorante La Luna</h1>
+    <div class="flag-selector">
       <select id="language-select">
-        <option value="en">English</option>
-        <option value="it">Italian</option>
+        <option value="en">🇺🇸</option>
+        <option value="it">🇮🇹</option>
       </select>
     </div>
   </header>
+
   <div class="container">
-    <!-- Review Section -->
-    <div class="section">
-      <h2 data-translate="section.review.title">Leave a Review</h2>
+    <!-- Feedback Section -->
+    <div class="feedback-card">
+      <h2 data-translate="feedback.title">Leave your feedback :)</h2>
       <div class="star-rating">
-        <input type="radio" name="rating" value="1" id="star-1"><label for="star-1">☆</label>
-        <input type="radio" name="rating" value="2" id="star-2"><label for="star-2">☆</label>
-        <input type="radio" name="rating" value="3" id="star-3"><label for="star-3">☆</label>
-        <input type="radio" name="rating" value="4" id="star-4"><label for="star-4">☆</label>
-        <input type="radio" name="rating" value="5" id="star-5"><label for="star-5">☆</label>
+        <input type="radio" name="rating" value="1" id="star-1"><label for="star-1">★</label>
+        <input type="radio" name="rating" value="2" id="star-2"><label for="star-2">★</label>
+        <input type="radio" name="rating" value="3" id="star-3"><label for="star-3">★</label>
+        <input type="radio" name="rating" value="4" id="star-4"><label for="star-4">★</label>
+        <input type="radio" name="rating" value="5" id="star-5"><label for="star-5">★</label>
       </div>
       <div id="feedback-form">
-        <h3 data-translate="feedback.form.title">We're sorry to hear that. Tell us how we can improve:</h3>
-        <form action="https://formspree.io/f/your-email" method="POST">
-          <textarea name="feedback" data-translate="feedback.form.placeholder" placeholder="Your feedback..." required></textarea><br>
-          <button type="submit" data-translate="feedback.form.submit">Submit Feedback</button>
-        </form>
+        <textarea placeholder="Come possiamo migliorare?" data-translate="feedback.placeholder"></textarea>
+        <button data-translate="feedback.submit">Submit</button>
       </div>
     </div>
+    <a href="#" class="reward-button" data-translate="reward.button">GET FREE REWARD</a>
+  </div>
 
-    <!-- Chatbot Section -->
-    <div class="section">
-      <h2 data-translate="section.chat.title">Chat with Us</h2>
-      <div id="chat-container">
-        <div id="chat-window"></div>
-        <div id="loading">...</div>
-        <div id="chat-input">
-          <input type="text" id="message-input" placeholder="Type your message here..." />
-          <button id="send-button" data-translate="chat.send">Send</button>
-        </div>
+  <!-- Chatbot Section (Commented out) -->
+  <!--
+  <div class="section">
+    <h2 data-translate="section.chat.title">Chat with Us</h2>
+    <div id="chat-container">
+      <div id="chat-window"></div>
+      <div id="loading">...</div>
+      <div id="chat-input">
+        <input type="text" id="message-input" placeholder="Type your message here..." />
+        <button id="send-button" data-translate="chat.send">Send</button>
       </div>
-    </div>
-
-    <!-- Quiz Section -->
-    <div class="section">
-      <h2 data-translate="section.quiz.title">Take a Quick Quiz</h2>
-      <p data-translate="section.quiz.description">Complete this quiz to win a free coffee!</p>
-      <iframe src="https://docs.google.com/forms/d/e/your-form-id/viewform"></iframe>
     </div>
   </div>
+  -->
+
+  <!-- Quiz Section (Commented out) -->
+  <!--
+  <div class="section">
+    <h2 data-translate="section.quiz.title">Take a Quick Quiz</h2>
+    <p data-translate="section.quiz.description">Complete this quiz to win a free coffee!</p>
+    <iframe src="https://docs.google.com/forms/d/e/your-form-id/viewform"></iframe>
+  </div>
+  -->
+
   <footer>
     <p data-translate="footer.text">&copy; 2024 Restaurant Prototype</p>
   </footer>
 
   <script>
+    // Translations
     const translations = {
       en: {
-        "title": "Restaurant Prototipazzo",
-        "header.title": "Restaurant Prototype",
-        "label.language": "Language:",
-        "section.review.title": "Leave a Review",
-        "feedback.form.title": "We're sorry to hear that. Tell us how we can improve:",
-        "feedback.form.placeholder": "Your feedback...",
-        "feedback.form.submit": "Submit Feedback",
-        "section.chat.title": "Chat with Us",
-        "chat.send": "Send",
-        "section.quiz.title": "Take a Quick Quiz",
-        "section.quiz.description": "Complete this quiz to win a free coffee!",
-        "footer.text": "&copy; 2024 Restaurant Prototype"
+        "title": "Restaurant La Luna",
+        "header.title": "Ristorante La Luna",
+        "feedback.title": "Leave your feedback :)",
+        "feedback.placeholder": "How can we improve?",
+        "feedback.submit": "Submit",
+        "reward.button": "GET FREE REWARD"
       },
       it: {
-        "title": "Ristorante Prototipazzo",
-        "header.title": "Prototipo del Ristorante",
-        "label.language": "Lingua:",
-        "section.review.title": "Lascia una Recensione",
-        "feedback.form.title": "Ci dispiace sentirlo. Dicci come possiamo migliorare:",
-        "feedback.form.placeholder": "Il tuo feedback...",
-        "feedback.form.submit": "Invia Feedback",
-        "section.chat.title": "Chatta con Noi",
-        "chat.send": "Invia",
-        "section.quiz.title": "Fai un Quiz Veloce",
-        "section.quiz.description": "Completa questo quiz per vincere un caffè gratis!",
-        "footer.text": "&copy; 2024 Prototipo del Ristorante"
+        "title": "Ristorante La Luna",
+        "header.title": "Ristorante La Luna",
+        "feedback.title": "Lascia il tuo feedback :)",
+        "feedback.placeholder": "Come possiamo migliorare?",
+        "feedback.submit": "Invia",
+        "reward.button": "RICEVI UN PREMIO"
       }
     };
 
-    function setLanguage(language) {
-      const elements = document.querySelectorAll("[data-translate]");
-      elements.forEach(el => {
+    function setLanguage(lang) {
+      document.querySelectorAll("[data-translate]").forEach(el => {
         const key = el.getAttribute("data-translate");
-        if (translations[language][key]) {
-          el.innerHTML = translations[language][key];
+        if (translations[lang][key]) {
+          el.innerHTML = translations[lang][key];
         }
       });
     }
 
-    const languageSelect = document.getElementById("language-select");
-    languageSelect.addEventListener("change", (e) => {
-      const selectedLanguage = e.target.value;
-      localStorage.setItem("selectedLanguage", selectedLanguage);
-      setLanguage(selectedLanguage);
+    document.getElementById("language-select").addEventListener("change", (e) => {
+      const lang = e.target.value;
+      setLanguage(lang);
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
-      languageSelect.value = savedLanguage;
-      setLanguage(savedLanguage);
-    });
-
+    // Handle star rating feedback
     document.querySelectorAll('.star-rating input').forEach(star => {
-        star.addEventListener('change', function() {
-            const rating = parseInt(this.value, 10);
-            const feedbackForm = document.getElementById('feedback-form');
-            if (rating <= 3) feedbackForm.style.display = 'block';
-            else window.location.href = 'https://www.example.com';
-        });
+      star.addEventListener('change', function () {
+        const rating = parseInt(this.value, 10);
+        const feedbackForm = document.getElementById('feedback-form');
+        feedbackForm.style.display = rating <= 3 ? 'block' : 'none';
+      });
     });
 
-    const chatWindow = document.getElementById('chat-window');
-    const messageInput = document.getElementById('message-input');
-    const sendButton = document.getElementById('send-button');
-    const chatApiUrl = 'https://dev-docker.therightdot.com/cc/chat';
-    let currentThreadId = null;
-
-    async function sendMessage(message) {
-      const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer hr-mr-d01' };
-      try {
-        const response = await fetch(chatApiUrl, { method: 'POST', headers, body: JSON.stringify({ message, threadId: currentThreadId }) });
-        const data = await response.json();
-        currentThreadId = data.threadId;
-        appendMessage('bot', data.message);
-      } catch (error) { console.error('Error:', error); }
-    }
-
-    function appendMessage(sender, message) {
-      const messageElement = document.createElement('div');
-      messageElement.classList.add('message', sender);
-      messageElement.textContent = message;
-      chatWindow.appendChild(messageElement);
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
-    sendButton.addEventListener('click', () => {
-      const message = messageInput.value.trim();
-      if (!message) return;
-      appendMessage('user', message);
-      messageInput.value = '';
-      sendMessage(message);
+    // Initialize language
+    document.addEventListener("DOMContentLoaded", () => {
+      setLanguage("en");
     });
-
-    messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendButton.click(); });
   </script>
 </body>
 </html>
