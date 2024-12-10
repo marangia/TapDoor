@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Restaurant Prototipazzo</title>
+  <title data-translate="title">Restaurant Prototipazzo</title>
   <style>
+    /* Your existing styles */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -16,9 +17,15 @@
       color: white;
       padding: 20px;
       text-align: center;
+      position: relative;
     }
     header h1 {
       margin: 0;
+    }
+    .language-selector {
+      position: absolute;
+      top: 20px;
+      right: 20px;
     }
     .container {
       padding: 20px;
@@ -147,12 +154,19 @@
 </head>
 <body>
   <header>
-    <h1>Restaurant Prototipo</h1>
+    <h1 data-translate="header.title">Restaurant Prototipo</h1>
+    <div class="language-selector">
+      <label for="language-select" data-translate="label.language">Language:</label>
+      <select id="language-select">
+        <option value="en">English</option>
+        <option value="it">Italian</option>
+      </select>
+    </div>
   </header>
   <div class="container">
     <!-- Review Section -->
     <div class="section">
-      <h2>Leave a Review</h2>
+      <h2 data-translate="section.review.title">Leave a Review</h2>
       <div class="star-rating">
         <input type="radio" name="rating" value="1" id="star-1"><label for="star-1">☆</label>
         <input type="radio" name="rating" value="2" id="star-2"><label for="star-2">☆</label>
@@ -161,86 +175,116 @@
         <input type="radio" name="rating" value="5" id="star-5"><label for="star-5">☆</label>
       </div>
       <div id="feedback-form">
-        <h3>We're sorry to hear that. Tell us how we can improve:</h3>
+        <h3 data-translate="feedback.form.title">We're sorry to hear that. Tell us how we can improve:</h3>
         <form action="https://formspree.io/f/your-email" method="POST">
-          <textarea name="feedback" placeholder="Your feedback..." required></textarea><br>
-          <button type="submit">Submit Feedback</button>
+          <textarea name="feedback" data-translate="feedback.form.placeholder" placeholder="Your feedback..." required></textarea><br>
+          <button type="submit" data-translate="feedback.form.submit">Submit Feedback</button>
         </form>
       </div>
     </div>
 
     <!-- Chatbot Section -->
     <div class="section">
-      <h2>Chat with Us</h2>
+      <h2 data-translate="section.chat.title">Chat with Us</h2>
       <div id="chat-container">
-        <div id="chat-window">
-          <!-- Chat messages will appear here -->
-        </div>
+        <div id="chat-window"></div>
         <div id="loading">...</div>
         <div id="chat-input">
           <input type="text" id="message-input" placeholder="Type your message here..." />
-          <button id="send-button">Send</button>
+          <button id="send-button" data-translate="chat.send">Send</button>
         </div>
       </div>
     </div>
 
     <!-- Quiz Section -->
     <div class="section">
-      <h2>Take a Quick Quiz</h2>
-      <p>Complete this quiz to win a free coffee!</p>
+      <h2 data-translate="section.quiz.title">Take a Quick Quiz</h2>
+      <p data-translate="section.quiz.description">Complete this quiz to win a free coffee!</p>
       <iframe src="https://docs.google.com/forms/d/e/your-form-id/viewform"></iframe>
     </div>
   </div>
   <footer>
-    <p>&copy; 2024 Restaurant Prototype</p>
+    <p data-translate="footer.text">&copy; 2024 Restaurant Prototype</p>
   </footer>
 
   <script>
+    const translations = {
+      en: {
+        "title": "Restaurant Prototipazzo",
+        "header.title": "Restaurant Prototype",
+        "label.language": "Language:",
+        "section.review.title": "Leave a Review",
+        "feedback.form.title": "We're sorry to hear that. Tell us how we can improve:",
+        "feedback.form.placeholder": "Your feedback...",
+        "feedback.form.submit": "Submit Feedback",
+        "section.chat.title": "Chat with Us",
+        "chat.send": "Send",
+        "section.quiz.title": "Take a Quick Quiz",
+        "section.quiz.description": "Complete this quiz to win a free coffee!",
+        "footer.text": "&copy; 2024 Restaurant Prototype"
+      },
+      it: {
+        "title": "Ristorante Prototipazzo",
+        "header.title": "Prototipo del Ristorante",
+        "label.language": "Lingua:",
+        "section.review.title": "Lascia una Recensione",
+        "feedback.form.title": "Ci dispiace sentirlo. Dicci come possiamo migliorare:",
+        "feedback.form.placeholder": "Il tuo feedback...",
+        "feedback.form.submit": "Invia Feedback",
+        "section.chat.title": "Chatta con Noi",
+        "chat.send": "Invia",
+        "section.quiz.title": "Fai un Quiz Veloce",
+        "section.quiz.description": "Completa questo quiz per vincere un caffè gratis!",
+        "footer.text": "&copy; 2024 Prototipo del Ristorante"
+      }
+    };
+
+    function setLanguage(language) {
+      const elements = document.querySelectorAll("[data-translate]");
+      elements.forEach(el => {
+        const key = el.getAttribute("data-translate");
+        if (translations[language][key]) {
+          el.innerHTML = translations[language][key];
+        }
+      });
+    }
+
+    const languageSelect = document.getElementById("language-select");
+    languageSelect.addEventListener("change", (e) => {
+      const selectedLanguage = e.target.value;
+      localStorage.setItem("selectedLanguage", selectedLanguage);
+      setLanguage(selectedLanguage);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const savedLanguage = localStorage.getItem("selectedLanguage") || "en";
+      languageSelect.value = savedLanguage;
+      setLanguage(savedLanguage);
+    });
+
     document.querySelectorAll('.star-rating input').forEach(star => {
         star.addEventListener('change', function() {
             const rating = parseInt(this.value, 10);
             const feedbackForm = document.getElementById('feedback-form');
-
-            if (rating <= 3) {
-                // Show feedback form for ratings 1, 2, or 3
-                feedbackForm.style.display = 'block';
-            } else if (rating >= 4) {
-                // Redirect for ratings 4 or 5
-                feedbackForm.style.display = 'none'; // Hide the feedback form
-                window.location.href = 'https://www.example.com'; // Replace with your external URL
-            }
+            if (rating <= 3) feedbackForm.style.display = 'block';
+            else window.location.href = 'https://www.example.com';
         });
     });
 
     const chatWindow = document.getElementById('chat-window');
     const messageInput = document.getElementById('message-input');
     const sendButton = document.getElementById('send-button');
-    const loadingIndicator = document.getElementById('loading');
-    const chatApiUrl = 'https://dev-docker.therightdot.com/cc/chat'; // Backend API for chatbot interactions
-
+    const chatApiUrl = 'https://dev-docker.therightdot.com/cc/chat';
     let currentThreadId = null;
 
     async function sendMessage(message) {
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer hr-mr-d01'
-      };
-      console.log('Sending headers:', headers);
-
+      const headers = { 'Content-Type': 'application/json', 'Authorization': 'Bearer hr-mr-d01' };
       try {
-        const response = await fetch(chatApiUrl, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ message, threadId: currentThreadId })
-        });
-
+        const response = await fetch(chatApiUrl, { method: 'POST', headers, body: JSON.stringify({ message, threadId: currentThreadId }) });
         const data = await response.json();
-        console.log('Response:', data);
         currentThreadId = data.threadId;
         appendMessage('bot', data.message);
-      } catch (error) {
-        console.error('Error:', error);
-      }
+      } catch (error) { console.error('Error:', error); }
     }
 
     function appendMessage(sender, message) {
@@ -254,17 +298,12 @@
     sendButton.addEventListener('click', () => {
       const message = messageInput.value.trim();
       if (!message) return;
-
       appendMessage('user', message);
       messageInput.value = '';
       sendMessage(message);
     });
 
-    messageInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        sendButton.click();
-      }
-    });
+    messageInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendButton.click(); });
   </script>
 </body>
 </html>
