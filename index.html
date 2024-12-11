@@ -14,8 +14,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh; /* Ensure minimum height is full viewport */
     }
-  header {
+
+    header {
       width: 100%;
       display: flex;
       justify-content: space-between;
@@ -62,9 +64,11 @@
     /* Main content */
     .container {
       margin-top: 60px;
-      width: calc(100% - 30px); /* Account for margins */
+      width: calc(100% - 30px);
       max-width: 400px;
-      box-sizing: border-box; /* Include padding in width calculation */
+      box-sizing: border-box;
+      flex: 1; /* Allow container to grow */
+      padding-bottom: 60px; /* Space for footer */
     }
 
     .feedback-card {
@@ -192,6 +196,9 @@
     .chat-input {
       display: flex;
       gap: 10px;
+      margin-top: 10px;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .chat-input textarea {
@@ -399,6 +406,51 @@
     .typing-dots::after {
       content: "";
       animation: typingDots 1.5s infinite;
+    }
+
+    /* Update footer styles */
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 20px 0;
+      background-color: #e7b77f;
+      position: sticky;
+      bottom: 0;
+      margin-top: auto; /* Push footer to bottom */
+    }
+
+    /* Fix mobile zoom issues */
+    @viewport {
+      width: device-width;
+      zoom: 1.0;
+    }
+
+    /* Update textarea and input styles to prevent zoom */
+    textarea, input[type="text"] {
+      font-size: 16px !important; /* Prevent iOS zoom */
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Prevent horizontal scroll */
+    html, body {
+      overflow-x: hidden;
+      position: relative;
+      width: 100%;
+    }
+
+    /* Update chat input styles */
+    .chat-input {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .chat-input input {
+      flex: 1;
+      min-width: 0; /* Prevent input from overflowing */
     }
   </style>
 </head>
