@@ -156,21 +156,59 @@
 
     .chat-messages {
       height: 60vh; /* Set height to 60% of the viewport height */
-      overflow-y: auto;
+      overflow-y: auto; /* Allow vertical scrolling */
+      overflow-x: hidden; /* Prevent horizontal scrolling */
       border: 1px solid #ccc;
       border-radius: 5px;
       padding: 10px;
       background: white;
       text-align: left;
       margin-bottom: 10px; /* Add margin to separate from other elements */
+      display: flex;
+      flex-direction: column; /* Use column layout */
+      justify-content: flex-start; /* Ensure messages stick to the top */
     }
 
+    /* Feedback received message style */
+    .feedback-notification {
+      background-color: black; /* Black background */
+      color: white; /* White text */
+      padding: 10px;
+      border-radius: 5px;
+      width: calc(100% - 20px); /* Full width with margins */
+      margin: 0 auto; /* Center the bubble */
+      margin-bottom: 10px; /* Space below the header */
+      display: flex;
+      flex-direction: column; /* Stack text vertically */
+      position: relative; /* Position relative for the close button */
+      text-align: center; /* Center text */
+    }
+
+    /* Underlined clickable text */
+    .reward-link {
+      margin-top: 5px; /* Space above the link */
+      text-decoration: underline; /* Underline the text */
+      color: #FFD700; /* Gold color for visibility */
+    }
+
+    /* Combined feedback message style */
+    .combined-message {
+      background-color: #d1e7dd; /* Light green background */
+      color: #0f5132; /* Dark green text */
+      padding: 10px;
+      border-radius: 5px;
+      width: 100%; /* Full width */
+      margin-bottom: 10px; /* Space below the header */
+    }
+
+    /* Message styles */
     .message {
       margin-bottom: 10px;
       padding: 8px 12px;
       border-radius: 15px;
       max-width: 80%;
       word-wrap: break-word;
+      position: relative; /* Position relative for the logo */
     }
 
     .user-message {
@@ -184,21 +222,27 @@
       margin-right: auto;
     }
 
+    /* Logo style */
+    .message-logo {
+      width: 24px; /* Set width for the logo */
+      height: 24px; /* Set height for the logo */
+      position: absolute; /* Position it inside the message bubble */
+      top: 5px; /* Adjust top position */
+      left: 5px; /* Adjust left position */
+    }
+
+    /* Padding for message text */
+    .server-message-text {
+      padding-left: 15px; /* Adjust padding to reduce space */
+    }
+
+    /* Chat input */
     .chat-input {
       display: flex;
       gap: 10px;
       margin-top: 10px;
       max-width: 100%;
       box-sizing: border-box;
-    }
-
-    .chat-input textarea {
-      flex-grow: 1;
-      height: 40px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 10px 15px;
-      font-size: 16px; /* Set a specific font size to prevent zooming */
     }
 
     .chat-input input {
@@ -483,6 +527,105 @@
     }
 
     /* Ensure feedback-buttons styles are after other button styles */
+
+    /* Chat messages */
+    .chat-messages {
+      height: 60vh; /* Set height to 60% of the viewport height */
+      overflow-y: auto; /* Allow vertical scrolling */
+      overflow-x: hidden; /* Prevent horizontal scrolling */
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      background: white;
+      text-align: left;
+      margin-bottom: 10px; /* Add margin to separate from other elements */
+      display: flex;
+      flex-direction: column; /* Use column layout */
+      justify-content: flex-start; /* Ensure messages stick to the top */
+    }
+
+    /* Feedback notification style */
+    .feedback-notification {
+      background-color: black; /* Black background */
+      color: white; /* White text */
+      padding: 10px;
+      border-radius: 5px;
+      width: calc(100% - 20px); /* Full width with margins */
+      margin: 0 auto; /* Center the bubble */
+      margin-bottom: 10px; /* Space below the header */
+      display: flex;
+      flex-direction: column; /* Stack text vertically */
+      position: relative; /* Position relative for the close button */
+      text-align: center; /* Center text */
+    }
+
+    /* Underlined clickable text */
+    .reward-link {
+      margin-top: 5px; /* Space above the link */
+      text-decoration: underline; /* Underline the text */
+      color: #FFD700; /* Gold color for visibility */
+    }
+
+    /* Close button style */
+    .close-button {
+      position: absolute; /* Position it in the top right corner */
+      top: 5px;
+      right: 5px;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* Message styles */
+    .message {
+      margin-bottom: 10px;
+      padding: 8px 12px;
+      border-radius: 15px;
+      max-width: 80%;
+      word-wrap: break-word;
+      position: relative; /* Position relative for the logo */
+    }
+
+    .user-message {
+      background: #e7b77f;
+      margin-left: auto;
+      color: black;
+    }
+
+    .server-message {
+      background: #f0f0f0;
+      margin-right: auto;
+    }
+
+    /* Chat input */
+    .chat-input {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .chat-input input {
+      flex: 1;
+      height: 40px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 0 15px;
+      font-size: 16px; /* Set a specific font size to prevent zooming */
+    }
+
+    .chat-input button {
+      background: black;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
@@ -521,7 +664,7 @@
         <div class="chat-interface" style="display: none;">
           <div class="chat-messages"></div>
           <div class="chat-input">
-            <input type="text" id="chat-message" placeholder="Type your message...">
+            <input type="text" id="chat-message" placeholder="">
             <button id="send-chat" data-translate="chat.send">Send</button>
           </div>
         </div>
@@ -586,12 +729,12 @@
     const translations = {
       en: {
         "title": "Restaurant La Luna Nel Pozzo",
-        "header.title": "La Luna",
+        "header.title": "La Luna Nel Pozzo",
         "feedback.title": "Leave your feedback :)",
         "feedback.placeholder": "Share details of your own experience at this place...",
         "feedback.submit": "Post",
-        "feedback.received": "We have received your feedback:",
-        "reward.button": "🎁 GET FREE REWARD",
+        "feedback.received": "We've received your feedback",
+        "reward.button": "🎁 GET A FREE REWARD",
         "reward.description": "Get a <b>free coffee</b> by showing the coupon to the waiter. Click below and claim this directly on Whatsapp or Telegram.",
         "reward.whatsapp": "GET IT ON WHATSAPP",
         "reward.telegram": "GET IT ON TELEGRAM",
@@ -599,7 +742,8 @@
         "reward.free": "FREE",
         "chat.send": "Send",
         "feedback.cancel": "Cancel",
-        "feedback.empty": "Thank you for your feedback!"
+        "feedback.empty": "Thank you for your feedback!",
+        "input.placeholder": "Type your message..."
       },
       it: {
         "title": "La Luna",
@@ -607,8 +751,8 @@
         "feedback.title": "Lascia il tuo feedback :)",
         "feedback.placeholder": "Condividi i dettagli della tua esperienza in questo luogo...",
         "feedback.submit": "Pubblica",
-        "feedback.received": "Abbiamo ricevuto il tuo feedback:",
-        "reward.button": "🎁 RICEVI UN PREMIO",
+        "feedback.received": "Abbiamo ricevuto il tuo feedback",
+        "reward.button": "🎁 RICEVI UN PREMIO GRATIS",
         "reward.description": "Ottieni un <b>caffè gratis</b> mostrando il coupon al cameriere. Clicca qui sotto e richiedilo direttamente su Whatsapp o Telegram.",
         "reward.whatsapp": "RICEVI SU WHATSAPP",
         "reward.telegram": "RICEVI SU TELEGRAM",
@@ -616,7 +760,8 @@
         "reward.free": "GRATIS",
         "chat.send": "Invia",
         "feedback.cancel": "Annulla",
-        "feedback.empty": "Grazie per il tuo feedback!"
+        "feedback.empty": "Grazie per il tuo feedback!",
+        "input.placeholder": "Scrivi il tuo messaggio..."
       }
     };
 
@@ -674,6 +819,10 @@
       // Update the placeholder for the feedback textarea
       const feedbackTextarea = document.getElementById('initial-message');
       feedbackTextarea.placeholder = translations[lang]['feedback.placeholder'];
+
+      // Update the placeholder for the chat input
+      const chatInput = document.getElementById('chat-message');
+      chatInput.placeholder = translations[lang]['input.placeholder'];
     }
 
     // Update initialization
@@ -769,25 +918,53 @@
         
         const chatMessages = document.querySelector('.chat-messages');
         
-        // Create combined feedback message with header
-        const userMessageDiv = document.createElement('div');
-        userMessageDiv.className = 'message user-message';
-        
-        // Add feedback header
-        const feedbackHeader = document.createElement('div');
-        feedbackHeader.className = 'feedback-header';
+        // Create feedback notification
+        const feedbackNotification = document.createElement('div');
+        feedbackNotification.className = 'feedback-notification';
         const currentLang = document.getElementById('language-select').value;
-        feedbackHeader.textContent = translations[currentLang]['feedback.received'];
+        feedbackNotification.innerHTML = `
+          <button class="close-button">&times;</button>
+          <div>${translations[currentLang]['feedback.received']}</div>
+          <div class="reward-link">${translations[currentLang]['reward.button']}</div>
+        `;
         
-        // Add message content
-        const messageContent = document.createElement('div');
-        messageContent.textContent = message;
+        // Add click event to open reward section
+        feedbackNotification.querySelector('.reward-link').addEventListener('click', function() {
+          const rewardSection = document.querySelector('.reward-section');
+          const feedbackForm = document.getElementById('feedback-form');
+          
+          if (rewardSection.style.display === 'none') {
+            rewardSection.style.display = 'block';
+            feedbackForm.style.display = 'none';
+            
+            // Smooth scroll to reward section
+            setTimeout(() => {
+              rewardSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+              });
+            }, 100); // Small delay to ensure the section is visible first
+          } else {
+            rewardSection.style.display = 'none';
+          }
+        });
+
+        // Add click event to close the feedback notification
+        feedbackNotification.querySelector('.close-button').addEventListener('click', function() {
+          feedbackNotification.style.display = 'none'; // Hide the notification
+        });
+
+        // Add feedback notification to chat messages
+        chatMessages.appendChild(feedbackNotification);
+
+        // Create combined feedback message
+        const combinedMessageDiv = document.createElement('div');
+        combinedMessageDiv.className = 'combined-message';
+        combinedMessageDiv.textContent = message;
         
-        // Combine header and message
-        userMessageDiv.appendChild(feedbackHeader);
-        userMessageDiv.appendChild(messageContent);
-        chatMessages.appendChild(userMessageDiv);
-        
+        // Add combined message to chat messages
+        chatMessages.appendChild(combinedMessageDiv);
+
         // Scroll to bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -808,7 +985,21 @@
           setTimeout(() => {
             const serverMessageDiv = document.createElement('div');
             serverMessageDiv.className = 'message server-message';
-            serverMessageDiv.textContent = serverResponse;
+            
+            // Add logo to the server message
+            const logo = document.createElement('span'); // Use span for emoji
+            logo.textContent = '🍽️'; // Restaurant emoji
+            logo.className = 'message-logo'; // Add logo class for styling
+            
+            serverMessageDiv.appendChild(logo); // Append logo to the message
+            
+            // Create a span for the server message text
+            const serverMessageText = document.createElement('span');
+            serverMessageText.className = 'server-message-text'; // Add class for padding
+            serverMessageText.textContent = serverResponse; // Append the server response text
+            
+            serverMessageDiv.appendChild(serverMessageText); // Append the text to the message
+            
             chatMessages.appendChild(serverMessageDiv);
             // Scroll to bottom
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -857,7 +1048,21 @@
           setTimeout(() => {
             const serverMessageDiv = document.createElement('div');
             serverMessageDiv.className = 'message server-message';
-            serverMessageDiv.textContent = serverResponse;
+            
+            // Add logo to the server message
+            const logo = document.createElement('span'); // Use span for emoji
+            logo.textContent = '🍽️'; // Restaurant emoji
+            logo.className = 'message-logo'; // Add logo class for styling
+            
+            serverMessageDiv.appendChild(logo); // Append logo to the message
+            
+            // Create a span for the server message text
+            const serverMessageText = document.createElement('span');
+            serverMessageText.className = 'server-message-text'; // Add class for padding
+            serverMessageText.textContent = serverResponse; // Append the server response text
+            
+            serverMessageDiv.appendChild(serverMessageText); // Append the text to the message
+            
             chatMessages.appendChild(serverMessageDiv);
             // Scroll to bottom
             chatMessages.scrollTop = chatMessages.scrollHeight;
