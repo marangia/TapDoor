@@ -155,14 +155,15 @@
     }
 
     .chat-messages {
-      min-height: 80px;
-      max-height: 200px;
+      height: 80vh; /* Set height to 80% of the viewport height */
+      max-height: 80vh; /* Ensure it doesn't exceed this height */
       overflow-y: auto;
       border: 1px solid #ccc;
       border-radius: 5px;
       padding: 10px;
       background: white;
       text-align: left;
+      margin-bottom: 10px; /* Add margin to separate from other elements */
     }
 
     .message {
@@ -198,8 +199,7 @@
       border: 1px solid #ccc;
       border-radius: 5px;
       padding: 10px 15px;
-      font-size: 14px;
-      resize: none;
+      font-size: 16px; /* Set a specific font size to prevent zooming */
     }
 
     .chat-input input {
@@ -208,7 +208,7 @@
       border: 1px solid #ccc;
       border-radius: 5px;
       padding: 0 15px;
-      font-size: 14px;
+      font-size: 16px; /* Set a specific font size to prevent zooming */
     }
 
     .chat-input button {
@@ -722,24 +722,54 @@
       document.getElementById('reward-trigger').classList.remove('inactive');
     });
 
+    // Add this near the top of your script section
+    const chatApiUrl = 'https://dev-docker.therightdot.com/cc/chat';
+    let currentThreadId = null;
+
+    async function sendMessage(message) {
+      const headers = { 
+        'Content-Type': 'application/json', 
+        'Authorization': 'Bearer hr-mr-d01' 
+      };
+      
+      try {
+        const response = await fetch(chatApiUrl, { 
+          method: 'POST', 
+          headers, 
+          body: JSON.stringify({ 
+            message, 
+            threadId: currentThreadId 
+          }) 
+        });
+        
+        const data = await response.json();
+        currentThreadId = data.threadId;
+        return data.message;
+      } catch (error) {
+        console.error('Error:', error);
+        return 'Sorry, there was an error processing your message.';
+      }
+    }
+
     // Update feedback submission handler
     document.getElementById('submit-initial-feedback').addEventListener('click', async function() {
       const initialMessage = document.getElementById('initial-message');
       const message = initialMessage.value.trim();
       const rewardButton = document.getElementById('reward-trigger');
-      const chatMessages = document.querySelector('.chat-messages');
-      
-      // Re-enable reward button
-      rewardButton.classList.remove('inactive');
-      
-      // Hide initial feedback interface
-      document.querySelector('.initial-feedback').style.display = 'none';
-      
-      // Show chat interface
-      const chatInterface = document.querySelector('.chat-interface');
-      chatInterface.style.display = 'block';
       
       if (message) {
+        // Re-enable reward button
+        rewardButton.classList.remove('inactive');
+        
+        // Hide initial feedback interface
+        document.querySelector('.initial-feedback').style.display = 'none';
+        
+        // Show chat interface
+        const chatInterface = document.querySelector('.chat-interface');
+        chatInterface.style.display = 'block';
+        
+        const chatMessages = document.querySelector('.chat-messages');
+        
         // Create combined feedback message with header
         const userMessageDiv = document.createElement('div');
         userMessageDiv.className = 'message user-message';
@@ -759,15 +789,17 @@
         userMessageDiv.appendChild(messageContent);
         chatMessages.appendChild(userMessageDiv);
         
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Send the initial message to the web service
         try {
-          // Show typing indicator
           const loadingDiv = document.createElement('div');
           loadingDiv.className = 'message server-message typing-indicator';
           const businessName = translations[currentLang]['header.title'];
           loadingDiv.innerHTML = `${businessName} ${translations[currentLang]['chat.typing']}<span class="typing-dots"></span>`;
           chatMessages.appendChild(loadingDiv);
           
-          // Send to server and get response
           const serverResponse = await sendMessage(message);
           
           // Remove typing indicator and add server response
@@ -787,17 +819,7 @@
           console.error('Error:', error);
           chatMessages.removeChild(loadingDiv); // Make sure to remove loading on error
         }
-      } else {
-        // Handle empty feedback
-        const currentLang = document.getElementById('language-select').value;
-        const emptyFeedbackDiv = document.createElement('div');
-        emptyFeedbackDiv.className = 'message server-message';
-        emptyFeedbackDiv.textContent = translations[currentLang]['feedback.empty'];
-        chatMessages.appendChild(emptyFeedbackDiv);
       }
-      
-      // Scroll to bottom in both cases
-      chatMessages.scrollTop = chatMessages.scrollHeight;
     });
 
     // Handle ongoing chat messages
@@ -878,35 +900,6 @@
         rewardSection.style.display = 'none';
       }
     });
-
-    // Add this near the top of your script section
-    const chatApiUrl = 'https://dev-docker.therightdot.com/cc/chat';
-    let currentThreadId = null;
-
-    async function sendMessage(message) {
-      const headers = { 
-        'Content-Type': 'application/json', 
-        'Authorization': 'Bearer hr-mr-d01' 
-      };
-      
-      try {
-        const response = await fetch(chatApiUrl, { 
-          method: 'POST', 
-          headers, 
-          body: JSON.stringify({ 
-            message, 
-            threadId: currentThreadId 
-          }) 
-        });
-        
-        const data = await response.json();
-        currentThreadId = data.threadId;
-        return data.message;
-      } catch (error) {
-        console.error('Error:', error);
-        return 'Sorry, there was an error processing your message.';
-      }
-    }
   </script>
 </body>
 </html>
