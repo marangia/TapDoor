@@ -129,17 +129,7 @@
       resize: none;
       margin-bottom: 10px;
     }
-    #feedback-form button {
-      background: black;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-.language-selector {
-      padding-right: 15px;
-    }
+
     /* Reward button */
     .reward-button {
       margin: 20px auto; /* Center the button with auto margins */
@@ -154,6 +144,7 @@
       font-weight: bold;
       width: calc(100% - 30px); /* Keep consistent width */
       box-sizing: border-box; /* Include padding in width calculation */
+      cursor: pointer;
     }
 
     .chat-container {
@@ -211,6 +202,15 @@
       resize: none;
     }
 
+    .chat-input input {
+      flex: 1;
+      height: 40px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 0 15px;
+      font-size: 14px;
+    }
+
     .chat-input button {
       background: black;
       color: white;
@@ -238,39 +238,30 @@
     }
 
     .initial-feedback button {
-      background: black;
+      background-color: #1a73e8; /* Google Maps blue */
       color: white;
-      padding: 10px 20px;
+      padding: 12px 24px;
       border: none;
-      border-radius: 5px;
+      border-radius: 4px;
       cursor: pointer;
-    }
-
-    .chat-input {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .chat-input input {
-      flex: 1;
-      height: 40px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 0 15px;
       font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.25px;
+      transition: background-color 0.2s;
+      width: 100%; /* Make button full width */
+      margin-top: 10px;
+      text-transform: uppercase; /* Match Google's style */
     }
 
-    .chat-input button {
-      background: black;
-      color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      white-space: nowrap;
+    .initial-feedback button:hover {
+      background-color: #1557b0; /* Darker blue on hover */
     }
 
+    .initial-feedback button:active {
+      background-color: #174ea6; /* Even darker when clicked */
+    }
+
+    /* Reward section */
     .reward-section {
       background: white;
       border-radius: 10px;
@@ -375,7 +366,7 @@
       cursor: not-allowed;
     }
 
-    /* Add these new styles */
+    /* Chat and Feedback Styles */
     .message.user-message .feedback-header {
       font-size: 12px;
       color: #666;
@@ -444,14 +435,55 @@
       display: flex;
       gap: 10px;
       margin-top: 10px;
-      max-width: 100%;
-      box-sizing: border-box;
     }
 
     .chat-input input {
       flex: 1;
       min-width: 0; /* Prevent input from overflowing */
     }
+
+    /* Feedback Buttons - Google Colors */
+    .feedback-buttons .cancel-button {
+      width: 33.33%; /* 1/3 width */
+      background-color: #E0E0E0; /* Google Grey */
+      color: #000000; /* Black Text */
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      transition: background-color 0.2s;
+    }
+
+    .feedback-buttons .cancel-button:hover {
+      background-color: #cfcfcf; /* Darker Grey on Hover */
+    }
+
+    .feedback-buttons .submit-button {
+      width: 66.67%; /* 2/3 width */
+      background-color: #4285F4; /* Google Blue */
+      color: #FFFFFF; /* White Text */
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      transition: background-color 0.2s;
+    }
+
+    .feedback-buttons .submit-button:hover {
+      background-color: #357ae8; /* Darker Blue on Hover */
+    }
+
+    /* Ensure buttons are displayed in a flex container */
+    .feedback-buttons {
+      display: flex;
+      gap: 10px; /* Optional: space between buttons */
+    }
+
+    /* Ensure feedback-buttons styles are after other button styles */
   </style>
 </head>
 <body>
@@ -471,7 +503,7 @@
   <div class="container">
     <!-- Feedback Section -->
     <div class="feedback-card">
-      <h2 data-translate="feedback.title">Leave your feedback :)</h2>
+      <h2 data-translate="feedback.title" style="font-size: 24px;">Leave your feedback :)</h2>
       <div class="star-rating">
         <input type="radio" name="rating" value="5" id="star-5"><label for="star-5">★</label>
         <input type="radio" name="rating" value="4" id="star-4"><label for="star-4">★</label>
@@ -480,10 +512,12 @@
         <input type="radio" name="rating" value="1" id="star-1"><label for="star-1">★</label>
       </div>
       <div id="feedback-form">
-        <p class="feedback-prompt" data-translate="feedback.placeholder">How can we improve?</p>
         <div class="initial-feedback">
-          <textarea id="initial-message"></textarea>
-          <button id="submit-initial-feedback" data-translate="feedback.submit">Submit</button>
+          <textarea id="initial-message" placeholder="Share details of your own experience at this place..."></textarea>
+          <div class="feedback-buttons">
+            <button id="cancel-feedback" class="cancel-button" data-translate="feedback.cancel">Cancel</button>
+            <button id="submit-initial-feedback" class="submit-button" data-translate="feedback.submit">Post</button>
+          </div>
         </div>
         <div class="chat-interface" style="display: none;">
           <div class="chat-messages"></div>
@@ -555,29 +589,35 @@
         "title": "Restaurant La Luna Nel Pozzo",
         "header.title": "La Luna",
         "feedback.title": "Leave your feedback :)",
-        "feedback.placeholder": "How can we improve?",
-        "feedback.submit": "Submit",
+        "feedback.placeholder": "Share details of your own experience at this place...",
+        "feedback.submit": "Post",
         "feedback.received": "We have received your feedback:",
         "reward.button": "🎁 GET FREE REWARD",
         "reward.description": "Get a <b>free coffee</b> by showing the coupon to the waiter. Click below and claim this directly on Whatsapp or Telegram.",
         "reward.whatsapp": "GET IT ON WHATSAPP",
         "reward.telegram": "GET IT ON TELEGRAM",
         "chat.typing": "is typing",
-        "reward.free": "FREE"
+        "reward.free": "FREE",
+        "chat.send": "Send",
+        "feedback.cancel": "Cancel",
+        "feedback.empty": "Thank you for your feedback!"
       },
       it: {
         "title": "La Luna",
         "header.title": "La Luna Nel Pozzo",
         "feedback.title": "Lascia il tuo feedback :)",
-        "feedback.placeholder": "Come possiamo migliorare?",
-        "feedback.submit": "Invia",
+        "feedback.placeholder": "Condividi i dettagli della tua esperienza in questo luogo...",
+        "feedback.submit": "Pubblica",
         "feedback.received": "Abbiamo ricevuto il tuo feedback:",
         "reward.button": "🎁 RICEVI UN PREMIO",
         "reward.description": "Ottieni un <b>caffè gratis</b> mostrando il coupon al cameriere. Clicca qui sotto e richiedilo direttamente su Whatsapp o Telegram.",
         "reward.whatsapp": "RICEVI SU WHATSAPP",
         "reward.telegram": "RICEVI SU TELEGRAM",
         "chat.typing": "sta scrivendo",
-        "reward.free": "GRATIS"
+        "reward.free": "GRATIS",
+        "chat.send": "Invia",
+        "feedback.cancel": "Annulla",
+        "feedback.empty": "Grazie per il tuo feedback!"
       }
     };
 
@@ -631,6 +671,10 @@
       });
       document.getElementById('language-select').value = lang;
       setLanguagePreference(lang);
+
+      // Update the placeholder for the feedback textarea
+      const feedbackTextarea = document.getElementById('initial-message');
+      feedbackTextarea.placeholder = translations[lang]['feedback.placeholder'];
     }
 
     // Update initialization
@@ -671,25 +715,31 @@
       });
     });
 
+    // Add cancel button handler
+    document.getElementById('cancel-feedback').addEventListener('click', function() {
+      const feedbackForm = document.getElementById('feedback-form');
+      feedbackForm.style.display = 'none';
+      document.getElementById('reward-trigger').classList.remove('inactive');
+    });
+
     // Update feedback submission handler
     document.getElementById('submit-initial-feedback').addEventListener('click', async function() {
       const initialMessage = document.getElementById('initial-message');
       const message = initialMessage.value.trim();
       const rewardButton = document.getElementById('reward-trigger');
+      const chatMessages = document.querySelector('.chat-messages');
+      
+      // Re-enable reward button
+      rewardButton.classList.remove('inactive');
+      
+      // Hide initial feedback interface
+      document.querySelector('.initial-feedback').style.display = 'none';
+      
+      // Show chat interface
+      const chatInterface = document.querySelector('.chat-interface');
+      chatInterface.style.display = 'block';
       
       if (message) {
-        // Re-enable reward button
-        rewardButton.classList.remove('inactive');
-        
-        // Hide initial feedback interface
-        document.querySelector('.initial-feedback').style.display = 'none';
-        
-        // Show chat interface
-        const chatInterface = document.querySelector('.chat-interface');
-        chatInterface.style.display = 'block';
-        
-        const chatMessages = document.querySelector('.chat-messages');
-        
         // Create combined feedback message with header
         const userMessageDiv = document.createElement('div');
         userMessageDiv.className = 'message user-message';
@@ -737,7 +787,17 @@
           console.error('Error:', error);
           chatMessages.removeChild(loadingDiv); // Make sure to remove loading on error
         }
+      } else {
+        // Handle empty feedback
+        const currentLang = document.getElementById('language-select').value;
+        const emptyFeedbackDiv = document.createElement('div');
+        emptyFeedbackDiv.className = 'message server-message';
+        emptyFeedbackDiv.textContent = translations[currentLang]['feedback.empty'];
+        chatMessages.appendChild(emptyFeedbackDiv);
       }
+      
+      // Scroll to bottom in both cases
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     });
 
     // Handle ongoing chat messages
