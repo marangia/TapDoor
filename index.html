@@ -994,214 +994,214 @@
 
     // Update feedback submission handler
     document.getElementById('submit-initial-feedback').addEventListener('click', async function () {
-  const initialMessage = document.getElementById('initial-message');
-  const message = initialMessage.value.trim();
-  const currentLang = document.getElementById('language-select').value;
-  const thankYouMessageDiv = document.getElementById('thank-you-message'); // Reference to thank you message div
-  const initialFeedbackDiv = document.querySelector('.initial-feedback');
-  const chatInterface = document.querySelector('.chat-interface');
-  const rewardButton = document.getElementById('reward-trigger'); // Reference to the reward button
+        const initialMessage = document.getElementById('initial-message');
+        const message = initialMessage.value.trim();
+        const currentLang = document.getElementById('language-select').value;
+        const thankYouMessageDiv = document.getElementById('thank-you-message'); // Reference to thank you message div
+        const initialFeedbackDiv = document.querySelector('.initial-feedback');
+        const chatInterface = document.querySelector('.chat-interface');
+        const rewardButton = document.getElementById('reward-trigger'); // Reference to the reward button
 
-  if (message) {
-    // Hide initial feedback interface
-    initialFeedbackDiv.style.display = 'none';
+        if (message) {
+            // Hide initial feedback interface
+            initialFeedbackDiv.style.display = 'none';
 
-    // Show chat interface
-    chatInterface.style.display = 'block';
+            // Show chat interface
+            chatInterface.style.display = 'block';
+            rewardButton.style.display = 'none'; // Hide the GET FREE REWARD button
 
-    const chatMessages = document.querySelector('.chat-messages');
+            const chatMessages = document.querySelector('.chat-messages');
 
-    // Create feedback notification
-    const feedbackNotification = document.createElement('div');
-    feedbackNotification.className = 'feedback-notification';
-    feedbackNotification.innerHTML = `
-      <button class="close-button">&times;</button>
-      <div>${translations[currentLang]['feedback.received']}</div>
-      <div class="reward-link">${translations[currentLang]['reward.button']}</div>
-    `;
+            // Create feedback notification
+            const feedbackNotification = document.createElement('div');
+            feedbackNotification.className = 'feedback-notification';
+            feedbackNotification.innerHTML = `
+                <button class="close-button">&times;</button>
+                <div>${translations[currentLang]['feedback.received']}</div>
+                <div class="reward-link">${translations[currentLang]['reward.button']}</div>
+            `;
 
-    // Add click event to open reward section
-    feedbackNotification.querySelector('.reward-link').addEventListener('click', function () {
-      const rewardSection = document.querySelector('.reward-section');
-      const feedbackForm = document.getElementById('feedback-form');
+            // Add click event to open reward section
+            feedbackNotification.querySelector('.reward-link').addEventListener('click', function () {
+                const rewardSection = document.querySelector('.reward-section');
+                const feedbackForm = document.getElementById('feedback-form');
 
-      if (rewardSection.style.display === 'none') {
-        rewardSection.style.display = 'block';
-        feedbackForm.style.display = 'none';
+                if (rewardSection.style.display === 'none') {
+                    rewardSection.style.display = 'block';
+                    feedbackForm.style.display = 'none';
 
-        // Smooth scroll to reward section
-        setTimeout(() => {
-          rewardSection.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-          });
-        }, 100); // Small delay to ensure the section is visible first
-      } else {
-        rewardSection.style.display = 'none';
-      }
+                    // Smooth scroll to reward section
+                    setTimeout(() => {
+                        rewardSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start',
+                        });
+                    }, 100); // Small delay to ensure the section is visible first
+                } else {
+                    rewardSection.style.display = 'none';
+                }
+            });
+
+            // Add click event to close the feedback notification
+            feedbackNotification.querySelector('.close-button').addEventListener('click', function () {
+                feedbackNotification.style.display = 'none'; // Hide the notification
+            });
+
+            // Add feedback notification to chat messages
+            chatMessages.appendChild(feedbackNotification);
+
+            // Create combined feedback message
+            const combinedMessageDiv = document.createElement('div');
+            combinedMessageDiv.className = 'combined-message';
+            combinedMessageDiv.textContent = message;
+
+            // Add combined message to chat messages
+            chatMessages.appendChild(combinedMessageDiv);
+
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Send the initial message to the web service
+            try {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'message server-message typing-indicator';
+                loadingDiv.innerHTML = `${translations[currentLang]['feedback.received']} <span class="typing-dots"></span>`;
+                chatMessages.appendChild(loadingDiv);
+
+                const serverResponse = await sendMessage(message);
+
+                // Remove typing indicator and add server response
+                chatMessages.removeChild(loadingDiv);
+
+                // Add server response after a small delay
+                setTimeout(() => {
+                    const serverMessageDiv = document.createElement('div');
+                    serverMessageDiv.className = 'message server-message';
+
+                    // Add logo to the server message
+                    const logo = document.createElement('span'); // Use span for emoji
+                    logo.textContent = '🍽️'; // Restaurant emoji
+                    logo.className = 'message-logo'; // Add logo class for styling
+
+                    serverMessageDiv.appendChild(logo); // Append logo to the message
+
+                    // Create a span for the server message text
+                    const serverMessageText = document.createElement('span');
+                    serverMessageText.className = 'server-message-text'; // Add class for padding
+                    serverMessageText.textContent = serverResponse; // Append the server response text
+
+                    serverMessageDiv.appendChild(serverMessageText); // Append the text to the message
+
+                    chatMessages.appendChild(serverMessageDiv);
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 100);
+            } catch (error) {
+                console.error('Error:', error);
+                // Optionally, handle the error (e.g., show an error message)
+            }
+        } else {
+            // Enable the reward button if no message is entered
+            rewardButton.classList.remove('inactive');
+            thankYouMessageDiv.innerHTML = translations[currentLang]['feedback.empty'];
+            thankYouMessageDiv.style.display = 'block'; // Show the thank you message
+            initialFeedbackDiv.style.display = 'none'; // Hide the feedback form
+            chatInterface.style.display = 'none'; // Ensure chat interface is hidden
+        }
     });
-
-    // Add click event to close the feedback notification
-    feedbackNotification.querySelector('.close-button').addEventListener('click', function () {
-      feedbackNotification.style.display = 'none'; // Hide the notification
-    });
-
-    // Add feedback notification to chat messages
-    chatMessages.appendChild(feedbackNotification);
-
-    // Create combined feedback message
-    const combinedMessageDiv = document.createElement('div');
-    combinedMessageDiv.className = 'combined-message';
-    combinedMessageDiv.textContent = message;
-
-    // Add combined message to chat messages
-    chatMessages.appendChild(combinedMessageDiv);
-
-    // Scroll to bottom
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-
-    // Send the initial message to the web service
-    try {
-      const loadingDiv = document.createElement('div');
-      loadingDiv.className = 'message server-message typing-indicator';
-      loadingDiv.innerHTML = `${translations[currentLang]['feedback.received']} <span class="typing-dots"></span>`;
-      chatMessages.appendChild(loadingDiv);
-
-      const serverResponse = await sendMessage(message);
-
-      // Remove typing indicator and add server response
-      chatMessages.removeChild(loadingDiv);
-
-      // Add server response after a small delay
-      setTimeout(() => {
-        const serverMessageDiv = document.createElement('div');
-        serverMessageDiv.className = 'message server-message';
-
-        // Add logo to the server message
-        const logo = document.createElement('span'); // Use span for emoji
-        logo.textContent = '🍽️'; // Restaurant emoji
-        logo.className = 'message-logo'; // Add logo class for styling
-
-        serverMessageDiv.appendChild(logo); // Append logo to the message
-
-        // Create a span for the server message text
-        const serverMessageText = document.createElement('span');
-        serverMessageText.className = 'server-message-text'; // Add class for padding
-        serverMessageText.textContent = serverResponse; // Append the server response text
-
-        serverMessageDiv.appendChild(serverMessageText); // Append the text to the message
-
-        chatMessages.appendChild(serverMessageDiv);
-        // Scroll to bottom
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-      }, 100);
-    } catch (error) {
-      console.error('Error:', error);
-      // Optionally, handle the error (e.g., show an error message)
-    }
-  } else {
-    // Enable the reward button if no message is entered
-    rewardButton.classList.remove('inactive');
-    thankYouMessageDiv.innerHTML = translations[currentLang]['feedback.empty'];
-    thankYouMessageDiv.style.display = 'block'; // Show the thank you message
-    initialFeedbackDiv.style.display = 'none'; // Hide the feedback form
-    chatInterface.style.display = 'none'; // Ensure chat interface is hidden
-  }
-});
 
 
     // Handle ongoing chat messages
-    document.getElementById('send-chat').addEventListener('click', async function() {
-      const messageInput = document.getElementById('chat-message');
-      const message = messageInput.value.trim();
-      
-      if (message) {
-        const chatMessages = document.querySelector('.chat-messages');
-        
-        // Add user message
-        const userMessageDiv = document.createElement('div');
-        userMessageDiv.className = 'message user-message';
-        userMessageDiv.textContent = message;
-        chatMessages.appendChild(userMessageDiv);
-        
-        // Clear input
-        messageInput.value = '';
-        
-        try {
-          // Show typing indicator
-          const loadingDiv = document.createElement('div');
-          loadingDiv.className = 'message server-message typing-indicator';
-          const currentLang = document.getElementById('language-select').value;
-          const businessName = translations[currentLang]['header.title'];
-          loadingDiv.innerHTML = `${businessName} ${translations[currentLang]['chat.typing']}<span class="typing-dots"></span>`;
-          chatMessages.appendChild(loadingDiv);
-          
-          // Send to server and get response
-          const serverResponse = await sendMessage(message);
-          
-          // Remove typing indicator and add server response
-          chatMessages.removeChild(loadingDiv);
-          
-          // Add server response after a small delay
-          setTimeout(() => {
-            const serverMessageDiv = document.createElement('div');
-            serverMessageDiv.className = 'message server-message';
-            
-            // Add logo to the server message
-            const logo = document.createElement('span'); // Use span for emoji
-            logo.textContent = '🍽️'; // Restaurant emoji
-            logo.className = 'message-logo'; // Add logo class for styling
-            
-            serverMessageDiv.appendChild(logo); // Append logo to the message
-            
-            // Create a span for the server message text
-            const serverMessageText = document.createElement('span');
-            serverMessageText.className = 'server-message-text'; // Add class for padding
-            serverMessageText.textContent = serverResponse; // Append the server response text
-            
-            serverMessageDiv.appendChild(serverMessageText); // Append the text to the message
-            
-            chatMessages.appendChild(serverMessageDiv);
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-          }, 100);
-          
-        } catch (error) {
-          console.error('Error:', error);
-          chatMessages.removeChild(loadingDiv); // Make sure to remove loading on error
+    document.getElementById('send-chat').addEventListener('click', async function () {
+        const messageInput = document.getElementById('chat-message');
+        const message = messageInput.value.trim();
+
+        if (message) {
+            const chatMessages = document.querySelector('.chat-messages');
+
+            // Add user message
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message user-message';
+            userMessageDiv.textContent = message;
+            chatMessages.appendChild(userMessageDiv);
+
+            // Clear input
+            messageInput.value = '';
+
+            try {
+                // Show typing indicator
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'message server-message typing-indicator';
+                const currentLang = document.getElementById('language-select').value;
+                const businessName = translations[currentLang]['header.title'];
+                loadingDiv.innerHTML = `${businessName} ${translations[currentLang]['chat.typing']}<span class="typing-dots"></span>`;
+                chatMessages.appendChild(loadingDiv);
+
+                // Send to server and get response
+                const serverResponse = await sendMessage(message);
+
+                // Remove typing indicator and add server response
+                chatMessages.removeChild(loadingDiv);
+
+                // Add server response after a small delay
+                setTimeout(() => {
+                    const serverMessageDiv = document.createElement('div');
+                    serverMessageDiv.className = 'message server-message';
+
+                    // Add logo to the server message
+                    const logo = document.createElement('span'); // Use span for emoji
+                    logo.textContent = '🍽️'; // Restaurant emoji
+                    logo.className = 'message-logo'; // Add logo class for styling
+
+                    serverMessageDiv.appendChild(logo); // Append logo to the message
+
+                    // Create a span for the server message text
+                    const serverMessageText = document.createElement('span');
+                    serverMessageText.className = 'server-message-text'; // Add class for padding
+                    serverMessageText.textContent = serverResponse; // Append the server response text
+
+                    serverMessageDiv.appendChild(serverMessageText); // Append the text to the message
+
+                    chatMessages.appendChild(serverMessageDiv);
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 100);
+            } catch (error) {
+                console.error('Error:', error);
+                chatMessages.removeChild(loadingDiv); // Make sure to remove loading on error
+            }
         }
-      }
     });
 
     // Allow sending chat messages with Enter key
-    document.getElementById('chat-message').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        document.getElementById('send-chat').click();
-      }
+    document.getElementById('chat-message').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('send-chat').click();
+        }
     });
 
     // Update reward button handler with smooth scroll
-    document.getElementById('reward-trigger').addEventListener('click', function(e) {
-      e.preventDefault();
-      const rewardSection = document.querySelector('.reward-section');
-      const feedbackForm = document.getElementById('feedback-form');
-      const chatInterface = document.querySelector('.chat-interface'); // Reference to chat interface
+    document.getElementById('reward-trigger').addEventListener('click', function (e) {
+        e.preventDefault();
+        const rewardSection = document.querySelector('.reward-section');
+        const feedbackForm = document.getElementById('feedback-form');
+        const chatInterface = document.querySelector('.chat-interface'); // Reference to chat interface
 
-      if (rewardSection.style.display === 'none') {
-        rewardSection.style.display = 'block';
-        feedbackForm.style.display = 'none';
-        chatInterface.style.display = 'none'; // Hide chat interface
-        // Smooth scroll to reward section
-        setTimeout(() => {
-          rewardSection.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 100); // Small delay to ensure the section is visible first
-      } else {
-        rewardSection.style.display = 'none';
-      }
+        if (rewardSection.style.display === 'none') {
+            rewardSection.style.display = 'block';
+            feedbackForm.style.display = 'none';
+            chatInterface.style.display = 'none'; // Hide chat interface
+            // Smooth scroll to reward section
+            setTimeout(() => {
+                rewardSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100); // Small delay to ensure the section is visible first
+        } else {
+            rewardSection.style.display = 'none';
+        }
     });
   </script>
 
