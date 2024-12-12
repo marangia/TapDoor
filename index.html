@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title data-translate="title">La Luna Nel Pozzo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
   <style>
     /* General styles */
     body {
@@ -68,11 +69,12 @@
       max-width: 400px;
       box-sizing: border-box;
       flex: 1; /* Allow container to grow */
-      padding-bottom: 60px; /* Space for footer */
+      padding-bottom: 30px; /* Space for footer */
     }
 
     .feedback-card {
       background: #f9f9f9;
+      margin-bottom: 15px;
       border-radius: 10px;
       padding: 20px 15px;
       text-align: center;
@@ -132,20 +134,21 @@
 
     /* Reward button */
     .reward-button {
-      margin: 20px auto; /* Center the button with auto margins */
-      display: block;
-      background: black;
-      color: white;
-      text-align: center;
-      padding: 15px 15px;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: bold;
-      width: calc(100% - 30px); /* Keep consistent width */
-      box-sizing: border-box; /* Include padding in width calculation */
-      cursor: pointer;
+        margin: 10px auto; /* Reduced margin to match the first code */
+        display: block;
+        background: black;
+        color: white;
+        text-align: center;
+        padding: 10px; /* Adjusted padding to reduce size */
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        width: calc(100% - 30px); /* Keep consistent width */
+        box-sizing: border-box; /* Include padding in width calculation */
+        cursor: pointer;
     }
+
 
     .chat-container {
       display: flex;
@@ -189,6 +192,7 @@
       margin-top: 5px; /* Space above the link */
       text-decoration: underline; /* Underline the text */
       color: #FFD700; /* Gold color for visibility */
+      cursor: pointer;
     }
 
     /* Combined feedback message style */
@@ -308,6 +312,7 @@
     .reward-section {
       background: white;
       border-radius: 10px;
+      margin-top: 0;
       padding: 20px 15px;
       margin: 20px auto; /* Center the section */
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -564,6 +569,7 @@
       margin-top: 5px; /* Space above the link */
       text-decoration: underline; /* Underline the text */
       color: #FFD700; /* Gold color for visibility */
+      cursor: pointer;
     }
 
     /* Close button style */
@@ -626,6 +632,60 @@
       cursor: pointer;
       white-space: nowrap;
     }
+
+    /* Thank You Message Style */
+    #thank-you-message {
+  display: none; /* Initially hidden */
+  background-color: #f8f9fa; /* Same background color as the parent div */
+  color: #0f5132; /* Dark green text */
+  padding: 20px; /* Add padding */
+  border-radius: 5px; /* Rounded corners */
+  margin: 10px 0; /* Adjust margin to avoid overflow */
+  width: 100%; /* Full width within the parent */
+  box-sizing: border-box; /* Ensure padding is included in width */
+  text-align: center; /* Center text */
+  font-size: 18px; /* Larger font size */
+  border: 1px solid #ccc; /* Optional border for distinction */
+  overflow-wrap: break-word; /* Prevent text overflow */
+}
+
+
+
+    /* Container for Thank You Message Content */
+    #thank-you-message .content {
+      /* Additional styling if needed */
+    }
+
+    /* Add this CSS to your existing styles */
+    #initial-message::placeholder {
+      font-family: 'Roboto', sans-serif; /* Use Roboto font */
+      font-size: 14px; /* Font size */
+      color: #999; /* Light gray color for placeholder */
+    }
+
+    /* Style for the POST and CANCEL buttons */
+    .feedback-buttons .cancel-button,
+    .feedback-buttons .submit-button {
+      font-family: 'Roboto', sans-serif; /* Use Roboto font */
+      font-size: 14px; /* Font size */
+      color: #FFFFFF; /* White text color */
+    }
+
+    .feedback-buttons .cancel-button {
+      background-color: #E0E0E0; /* Google Grey */
+    }
+
+    .feedback-buttons .submit-button {
+      background-color: #4285F4; /* Google Blue */
+    }
+
+    .feedback-buttons .cancel-button:hover {
+      background-color: #cfcfcf; /* Darker Grey on Hover */
+    }
+
+    .feedback-buttons .submit-button:hover {
+      background-color: #357ae8; /* Darker Blue on Hover */
+    }
   </style>
 </head>
 <body>
@@ -653,7 +713,7 @@
         <input type="radio" name="rating" value="2" id="star-2"><label for="star-2">★</label>
         <input type="radio" name="rating" value="1" id="star-1"><label for="star-1">★</label>
       </div>
-      <div id="feedback-form">
+      <div id="feedback-form" style="margin-bottom: 10px;"> <!-- Reduced space -->
         <div class="initial-feedback">
           <textarea id="initial-message" placeholder="Share details of your own experience at this place..."></textarea>
           <div class="feedback-buttons">
@@ -661,16 +721,28 @@
             <button id="submit-initial-feedback" class="submit-button" data-translate="feedback.submit">Post</button>
           </div>
         </div>
-        <div class="chat-interface" style="display: none;">
-          <div class="chat-messages"></div>
-          <div class="chat-input">
-            <input type="text" id="chat-message" placeholder="">
-            <button id="send-chat" data-translate="chat.send">Send</button>
-          </div>
+      </div>
+
+      <!-- Thank You Message -->
+      <div id="thank-you-message" style="margin-bottom: 10px;"> <!-- Reduced space -->
+        <div class="content">
+          <!-- Thank you content is dynamically set via JavaScript -->
+        </div>
+      </div>
+
+      <div class="chat-interface" style="display: none; margin-bottom: 10px;"> <!-- Reduced space -->
+        <div class="chat-messages"></div>
+        <div class="chat-input">
+          <input type="text" id="chat-message" placeholder="Type your message...">
+          <button id="send-chat" data-translate="chat.send">Send</button>
         </div>
       </div>
     </div>
-    <a href="#" class="reward-button" data-translate="reward.button" id="reward-trigger">🎁 GET FREE REWARD</a>
+
+    <!-- GET FREE REWARD Button -->
+    <a href="#" class="reward-button" data-translate="reward.button" id="reward-trigger" style="margin-top: 0;">🎁 GET FREE REWARD</a>
+
+    <!-- Reward Section -->
     <div class="reward-section" style="display: none;">
       <div class="reward-image-placeholder">
         <div class="image-placeholder">
@@ -689,7 +761,7 @@
           <span data-translate="reward.whatsapp">GET IT ON WHATSAPP</span>
         </a>
         <a href="https://t.me/TapDoorSample_bot" target="_blank" class="telegram-button">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJ3aGl0ZSIgZD0iTTkuNzggMTguNjVMMTAuMDYgMTQuNzJMMTcuNzYgNy41QzE4LjEzIDcuMTQgMTcuNzYgNyAxNy4zNyA3LjMxTDcuNTggMTMuNDhMMy44NSAxMi4wOUM0LjY4IDExLjkgOC4yOCAxMC41IDguMjggMTAuNUwxOC4zNiA2LjY0QzE5LjE1IDYuMzEgMTkuOTcgNi45NyAxOS42MiA4LjQ3TDE3LjA1IDE4LjE4QzE2Ljg0IDE5LjIxIDE1Ljk0IDE5LjU5IDE1LjEgMTkuMDZMMTEuMSAxNi4xTDkuMTIgMTguMDJDOC45IDE4LjI0IDguNzIgMTguNDEgOC4yOCAxOC40MUM3Ljg0IDE4LjQxIDcuOTQgMTguMjQgNy43OCAxNy44MUw2LjI2IDEzLjg3TDIuNzUgMTIuNzFDMS44NSAxMi4zNSAxLjg1IDExLjQxIDIuOTUgMTEuMDNMMTkuMzUgNS4wNUMyMC4yIDQuNzEgMjAuOTUgNS40MiAyMC42IDYuOTJMMTcuNiAxOS4zN0MxNy4zOCAyMC42IDE2LjM0IDIwLjk3IDE1LjM3IDIwLjM3TDExLjc1IDE3LjU5TDkuNzUgMTkuNDJDOS41MyAxOS42NCA5LjM1IDE5LjgxIDguOTEgMTkuODFDOC40NyAxOS44MSA4LjU3IDE5LjY0IDguNDEgMTkuMjFMNi44OSAxNS4yN0wzLjM4IDE0LjFDMi40OCAxMy43NCAyLjQ4IDEyLjggMy41OCAxMi40MkwyMCAwLjQyQzIwLjg1IDAuMDggMjEuNiAwLjc5IDIxLjI1IDIuMjlMMTcuNiAxOS4zN0MxNy4zOCAyMC42IDE2LjM0IDIwLjk3IDE1LjM3IDIwLjM3TDExLjc1IDE3LjU5TDkuNzggMTguNjVaIi8+PC9zdmc+" alt="Telegram">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJ3aGl0ZSIgZD0iTTkuNzggMTguNjVMMTAuMDYgMTQuNzJMMTcuNzYgNy41QzE4LjEzIDcuMTQgMTcuNzYgNyAxNy4zNyA3LjMxTDcuNTggMTMuNDhMMy44NSAxMi4wOUM0LjY4IDExLjkgOC4yOCAxMC41IDguMjggMTAuNUwxOC4zNiA2LjY0QzE5LjE1IDYuMzEgMTkuOTcgNi45NyAxOS42MiA4LjQ3TDE3LjA1IDE4LjE4QzE2Ljg0IDE5LjIxIDE1Ljk0IDE5LjU5IDE1LjEgMTkuMDZMMTEuMSAxNi4xTDkuMTIgMTguMDJDOC45IDE4LjI0IDguNzIgMTguNDEgOC4yOCAxOC40MUM3Ljg0IDE4LjQxIDcuOTQgMTguMjQgNy43OCAxNy44MUw2LjI2IDEzLjg3TDIuNzUgMTIuNzFDMS44NSAxMi4zNSAxLjg1IDExLjQxIDIuOTUgMTEuMDNMMTkuMzUgNS4wNUMyMC4yIDQuNzEgMjAuOTUgNS40MiAyMC42IDYuOTJMMTcuNiAxOS4zN0MxNy4zOCAyMC42IDE2LjM0IDIwLjk3IDE1LjM3IDIwLjM3TDExLjc1IDE3LjU5TDkuNzggMTguNjVaIi8+PC9zdmc+" alt="Telegram">
           <span data-translate="reward.telegram">GET IT ON TELEGRAM</span>
         </a>
       </div>
@@ -903,17 +975,19 @@
     document.getElementById('submit-initial-feedback').addEventListener('click', async function() {
       const initialMessage = document.getElementById('initial-message');
       const message = initialMessage.value.trim();
-      const rewardButton = document.getElementById('reward-trigger');
-      
+      const currentLang = document.getElementById('language-select').value;
+      const thankYouMessageDiv = document.getElementById('thank-you-message'); // Reference to thank you message div
+      const initialFeedbackDiv = document.querySelector('.initial-feedback');
+      const chatInterface = document.querySelector('.chat-interface');
+
       if (message) {
-        // Re-enable reward button
-        rewardButton.classList.remove('inactive');
+        // Re-enable reward button if previously disabled
+        document.getElementById('reward-trigger').classList.remove('inactive');
         
         // Hide initial feedback interface
-        document.querySelector('.initial-feedback').style.display = 'none';
+        initialFeedbackDiv.style.display = 'none';
         
         // Show chat interface
-        const chatInterface = document.querySelector('.chat-interface');
         chatInterface.style.display = 'block';
         
         const chatMessages = document.querySelector('.chat-messages');
@@ -921,7 +995,6 @@
         // Create feedback notification
         const feedbackNotification = document.createElement('div');
         feedbackNotification.className = 'feedback-notification';
-        const currentLang = document.getElementById('language-select').value;
         feedbackNotification.innerHTML = `
           <button class="close-button">&times;</button>
           <div>${translations[currentLang]['feedback.received']}</div>
@@ -972,8 +1045,7 @@
         try {
           const loadingDiv = document.createElement('div');
           loadingDiv.className = 'message server-message typing-indicator';
-          const businessName = translations[currentLang]['header.title'];
-          loadingDiv.innerHTML = `${businessName} ${translations[currentLang]['chat.typing']}<span class="typing-dots"></span>`;
+          loadingDiv.innerHTML = `${translations[currentLang]['feedback.received']} <span class="typing-dots"></span>`;
           chatMessages.appendChild(loadingDiv);
           
           const serverResponse = await sendMessage(message);
@@ -1007,8 +1079,14 @@
           
         } catch (error) {
           console.error('Error:', error);
-          chatMessages.removeChild(loadingDiv); // Make sure to remove loading on error
+          // Optionally, handle the error (e.g., show an error message)
         }
+      } else {
+        // If no message is entered, show thank you message
+        thankYouMessageDiv.innerHTML = translations[currentLang]['feedback.empty'];
+        thankYouMessageDiv.style.display = 'block'; // Show the thank you message
+        initialFeedbackDiv.style.display = 'none'; // Hide the feedback form
+        chatInterface.style.display = 'none'; // Ensure chat interface is hidden
       }
     });
 
@@ -1088,11 +1166,12 @@
       e.preventDefault();
       const rewardSection = document.querySelector('.reward-section');
       const feedbackForm = document.getElementById('feedback-form');
-      
+      const chatInterface = document.querySelector('.chat-interface'); // Reference to chat interface
+
       if (rewardSection.style.display === 'none') {
         rewardSection.style.display = 'block';
         feedbackForm.style.display = 'none';
-        
+        chatInterface.style.display = 'none'; // Hide chat interface
         // Smooth scroll to reward section
         setTimeout(() => {
           rewardSection.scrollIntoView({ 
@@ -1105,5 +1184,8 @@
       }
     });
   </script>
+
+  <!-- Add this div somewhere in your HTML to display the thank you message -->
+  <div id="thank-you-message" style="display: none; background-color: #d1e7dd; color: #0f5132; padding: 20px; border-radius: 5px; margin: 10px auto; width: calc(100% - 20px); text-align: center; font-size: 18px;"></div>
 </body>
 </html>
